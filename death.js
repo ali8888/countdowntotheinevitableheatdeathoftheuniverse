@@ -15,6 +15,7 @@ const dayElem = document.createElement("p");
 const hourElem = document.createElement("p");
 const minuteElem = document.createElement("p");
 const secondElem = document.createElement("p");
+const millisecondElem = document.createElement("p");
 
 //these are specially formatted to have commas
 //because they were very big numbers
@@ -32,23 +33,26 @@ let day;
 let hour;
 let minute;
 let second;
+let millisecond;
 
 function formatTime(n) {
 
   //big int is a JavaScript class that allows math with arbitrarily large integers
-  galacticYear = n / BigInt(24 * 3600 * 365.2425 * 1000 * 230000);
-  n %= BigInt(24 * 3600 * 365.2425 * 1000 * 230000);
-  millenium = n / BigInt(24 * 3600 * 365.2425 * 1000);
+  galacticYear = n / BigInt(24 * 3600 * 365.2425 * 1000 * 230000 * 1000);
+  n %= BigInt(24 * 3600 * 365.2425 * 1000 * 230000 * 1000);
+  millenium = n / BigInt(24 * 3600 * 365.2425 * 1000 * 1000);
+  n %= BigInt(24 * 3600 * 365.2425 * 1000 * 1000);
+  year = n / BigInt(24 * 3600 * 365.2425 * 1000);
   n %= BigInt(24 * 3600 * 365.2425 * 1000);
-  year = n / BigInt(24 * 3600 * 365.2425);
-  n %= BigInt(24 * 3600 * 365.2425);
-  day = n / BigInt(24 * 3600);
-  n %= BigInt(24 * 3600);
-  hour = n / BigInt(3600);
-  n %= BigInt(3600);
-  minute = n / BigInt(60) ;
-  n %= BigInt(60);
+  day = n / BigInt(24 * 3600 * 1000);
+  n %= BigInt(24 * 3600 * 1000);
+  hour = n / BigInt(3600 * 1000);
+  n %= BigInt(3600 * 1000);
+  minute = n / BigInt(60 * 1000) ;
+  n %= BigInt(60 * 1000);
   second = n;
+  n %= BigInt(1000);
+  millisecond = n;
   
   //we use an 's' after words to indicate that there are more than 1 of something 
   let s = "s";
@@ -125,26 +129,42 @@ function formatTime(n) {
   } else {
     s = "s";
   }
-  let secondText = document.createTextNode("and " + second + " second"+s+" until the end of the universe.");
+  let secondText = document.createTextNode(second + " second"+s+", ");
   secondElem.appendChild(secondText);
+  
+  if (millisecond == 1) {
+    s = "";
+  } else {
+    s = "s";
+  }
+  let millisecondText = document.createTextNode("and " + millisecond + " millisecond"+s+" until the end of the universe.");
+  millisecondElem.appendChild(millisecondText);
   
 }
 
 function resetAll(n) {
 
-  galacticYear = n / BigInt(24 * 3600 * 365.2425 * 1000 * 230000);
-  n %= BigInt(24 * 3600 * 365.2425 * 1000 * 230000);
-  millenium = n / BigInt(24 * 3600 * 365.2425 * 1000);
+  galacticYear = n / BigInt(24 * 3600 * 365.2425 * 1000 * 230000 * 1000);
+  n %= BigInt(24 * 3600 * 365.2425 * 1000 * 230000 * 1000);
+  millenium = n / BigInt(24 * 3600 * 365.2425 * 1000 * 1000);
+  n %= BigInt(24 * 3600 * 365.2425 * 1000 * 1000);
+  year = n / BigInt(24 * 3600 * 365.2425 * 1000);
   n %= BigInt(24 * 3600 * 365.2425 * 1000);
-  year = n / BigInt(24 * 3600 * 365.2425);
-  n %= BigInt(24 * 3600 * 365.2425);
-  day = n / BigInt(24 * 3600);
-  n %= BigInt(24 * 3600);
-  hour = n / BigInt(3600);
-  n %= BigInt(3600);
-  minute = n / BigInt(60) ;
-  n %= BigInt(60);
-  second = n;
+  day = n / BigInt(24 * 3600 * 1000);
+  n %= BigInt(24 * 3600 * 1000);
+  hour = n / BigInt(3600 * 1000);
+  n %= BigInt(3600 * 1000);
+  minute = n / BigInt(60 * 1000) ;
+  n %= BigInt(60 * 1000);
+  second = n / BigInt(1000);
+  n %= BigInt(1000);
+  millisecond = n;
+  
+  if (millisecond == 1) {
+    ms = "";
+  } else {
+    ms = "s";
+  }
 
   if (second == 1) {
     s = "";
@@ -206,7 +226,9 @@ function resetAll(n) {
 
   minuteElem.innerHTML = minute + " minute"+m+", ";
 
-  secondElem.innerHTML = "and " + second + " second" + s + " until the end of the universe.";
+  secondElem.innerHTML = second + " second" + s + ", ";
+  
+  millisecondElem.innerHTML = "and " + millisecond + " millisecond" + s + " until the end of the universe.";
 
 }
 
@@ -220,11 +242,21 @@ function decrementTimer() {
     //this is because, in our time, computers are not accurate
     count = 0;
     now = new Date();
-    now = Math.round(now.getTime() / 1000);
+    now = now.getTime()
     resetAll(endOfUniverse - BigInt(now));
     clearInterval(t);
-    t=setInterval(decrementTimer,1000);
+    t=setInterval(decrementTimer,1);
 }
+
+
+millisecond--;
+if (millisecond == 1) {
+    ms = "";
+  } else {
+    ms = "s";
+  }
+  if (millisecond <= -1) {
+	  //millisecond=999;
   second--;
   if (second == 1) {
     s = "";
@@ -289,16 +321,19 @@ function decrementTimer() {
     }
     minuteElem.innerHTML = minute + " minute"+m+", ";
   }
-  secondElem.innerHTML = "and " + second + " second" + s + " until the end of the universe.";
+  secondElem.innerHTML = second + " second" + s + ", ";
+}
+
+	millisecondElem.innerHTML = "and " + millisecond + " millisecond" + ms + " until the end of the universe.";
 }
 
 //this will take a 41 bit time from the client computer that we 
 //will shave the milliseconds off of because we dont need them.
 //TODO: this will break in 2038. plz replace with whatever ya'll are using then
 var now = new Date();
-now = Math.round(now.getTime() / 1000);
+now = Math.round(now.getTime());
 
-let endOfUniverse = BigInt(2)**BigInt(512)-BigInt(1)
+let endOfUniverse = (BigInt(2)**BigInt(512)-BigInt(1));
 
 let nowElem = document.getElementById("now");
 
@@ -318,9 +353,10 @@ nowElem.appendChild(dayElem);
 nowElem.appendChild(hourElem);
 nowElem.appendChild(minuteElem);
 nowElem.appendChild(secondElem);
+nowElem.appendChild(millisecondElem);
 
 //ever second update the time we have left
-var t=setInterval(decrementTimer,1000);
+var t=setInterval(decrementTimer,1);
 
 //That's all!
 
