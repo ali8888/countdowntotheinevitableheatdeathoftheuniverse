@@ -1,8 +1,6 @@
-# countdowntotheinevitableheatdeathoftheuniverse
-Countdown to the Inevitable Heat Death of the Universe
+# countdowntotheinevitableheatdeathoftheuniverseinmilliseconds
+Countdown to the Inevitable Heat Death of the Universe In Milliseconds
 
-This is just a silly timer with a very big number. Maybe you can improve it, idk.
+Forked from the Countdown to the Inevitable Heat Death of the Universe
 
-Values do not need to be hosted on a server. It is based on the client machine's system time.
-
-*prediction of the end of the universe may change as the eons progress.
+It now displays the countdown in milliseconds..
