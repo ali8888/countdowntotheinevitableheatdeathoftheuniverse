@@ -333,7 +333,7 @@ if (millisecond == 1) {
 var now = new Date();
 now = Math.round(now.getTime());
 
-let endOfUniverse = (BigInt(2)**BigInt(512)-BigInt(1));
+let endOfUniverse = ((BigInt(2)**BigInt(512))*BigInt(1000)-BigInt(1));
 
 let nowElem = document.getElementById("now");
 
